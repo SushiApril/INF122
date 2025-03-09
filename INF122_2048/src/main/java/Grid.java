@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.List;
+import java.util.Scanner;
 
 public class Grid {
     private static final int SIZE = 4; //4x4 for 2048, can be changed for larger grid
@@ -175,52 +176,96 @@ public class Grid {
         return reversed;
     }
 
+    // Checks if player has won the game (tile reaches 2048)
+public boolean hasWon() {
+    for (int x = 0; x < SIZE; x++) {
+        for (int y = 0; y < SIZE; y++) {
+            if (grid[x][y].getValue() == 2048) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// Checks if no more moves are possible (Game Over condition)
+public boolean isGameOver() {
+    if (!getEmptyTiles().isEmpty()) {
+        return false; // If there are empty tiles, game isn't over
+    }
+    
+    // Check if any moves can still be made
+    for (int x = 0; x < SIZE; x++) {
+        for (int y = 0; y < SIZE; y++) {
+            int currentValue = grid[x][y].getValue();
+
+            // Check adjacent tiles
+            if (x > 0 && grid[x - 1][y].getValue() == currentValue) return false; // Left
+            if (x < SIZE - 1 && grid[x + 1][y].getValue() == currentValue) return false; // Right
+            if (y > 0 && grid[x][y - 1].getValue() == currentValue) return false; // Up
+            if (y < SIZE - 1 && grid[x][y + 1].getValue() == currentValue) return false; // Down
+        }
+    }
+
+    return true; // No moves left
+}
+
     // **Main function to test movement**
     // chatgpted this function to test movement of the grid
-    public static void main(String[] args) {
-        System.out.println("Starting 2048 Grid Test: \n");
-        Grid testGrid = new Grid();
-        testGrid.printGrid();
+    public static void main(String[] args) {Scanner scanner = new Scanner(System.in);
+        Grid gameGrid = new Grid();
+        boolean gameOver = false;
+        
+        System.out.println("Welcome to 2048!");
+        gameGrid.printGrid();
 
-        Random rand = new Random();
-        int moves = 20; // Number of moves to test
-        int validMoves = 0; // Count how many times movement actually happens
-
-        String[] directions = {"Left", "Right", "Up", "Down"};
-
-        for (int i = 0; i < moves; i++) {
-            int move = rand.nextInt(4); // Random move (0 = Left, 1 = Right, 2 = Up, 3 = Down)
-            System.out.println("Move " + (validMoves + 1) + ": " + directions[move]);
+        while (!gameOver) {
+            System.out.print("Enter move (w=Up, a=Left, s=Down, d=Right, q=Quit): ");
+            String input = scanner.nextLine().trim().toLowerCase();
 
             boolean moved = false;
-            switch (move) {
-                case 0:
-                    testGrid.moveLeft();
+
+            switch (input) {
+                case "w":
+                    gameGrid.moveUp();
                     moved = true;
                     break;
-                case 1:
-                    testGrid.moveRight();
+                case "a":
+                    gameGrid.moveLeft();
                     moved = true;
                     break;
-                case 2:
-                    testGrid.moveUp();
+                case "s":
+                    gameGrid.moveDown();
                     moved = true;
                     break;
-                case 3:
-                    testGrid.moveDown();
+                case "d":
+                    gameGrid.moveRight();
                     moved = true;
                     break;
+                case "q":
+                    System.out.println("Game Over! You quit.");
+                    gameOver = true;
+                    continue;
+                default:
+                    System.out.println("Invalid input. Use w, a, s, d to move, or q to quit.");
+                    continue;
             }
 
             if (moved) {
-                validMoves++; // Count only successful moves
-                testGrid.printGrid();
+                gameGrid.printGrid();
 
-                // Check if the board is full and no more moves can be made
+                if (gameGrid.hasWon()) {
+                    System.out.println("Congratulations! You won the game!");
+                    gameOver = true;
+                } else if (gameGrid.isGameOver()) {
+                    System.out.println("Game Over! No more moves left.");
+                    gameOver = true;
+                }
             }
         }
 
-        System.out.println("Total Moves Performed: " + validMoves);
+        scanner.close();
+    }
     }
 
-}
+
