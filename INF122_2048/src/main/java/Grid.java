@@ -8,6 +8,7 @@ public class Grid {
 
     private Tiles[][] grid;
     private Random random;
+    private int score = 0;
 
     public Grid(){
         grid = new Tiles[SIZE][SIZE];
@@ -15,6 +16,10 @@ public class Grid {
         initializeGrid();
         generateNewTile();
         generateNewTile();
+    }
+
+    public int getScore() {
+        return score;
     }
 
     // Initalizes board to be filled with tiles(can be empty or contain value)
@@ -134,6 +139,7 @@ public class Grid {
                 //check if the previous tile can merge and hasnt yet
                 if (insertPos > 0 && !merged[insertPos - 1] && newLine[insertPos - 1].getValue() == currentValue) {
                     newLine[insertPos - 1].doubleValue();
+                    score += newLine[insertPos -1].getValue() ;
                     merged[insertPos - 1] = true;
                     moved = true;
                 } else {
@@ -253,12 +259,15 @@ public boolean isGameOver() {
 
             if (moved) {
                 gameGrid.printGrid();
+                System.out.println("Score: " + gameGrid.getScore());  // **Show updated score**
 
                 if (gameGrid.hasWon()) {
                     System.out.println("Congratulations! You won the game!");
+                    System.out.println("Final Score: " + gameGrid.getScore());
                     gameOver = true;
                 } else if (gameGrid.isGameOver()) {
                     System.out.println("Game Over! No more moves left.");
+                    System.out.println("Final Score: " + gameGrid.getScore());
                     gameOver = true;
                 }
             }
