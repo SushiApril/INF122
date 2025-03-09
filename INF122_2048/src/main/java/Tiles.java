@@ -51,4 +51,8 @@ public class Tiles {
     public void setTilesEmpty() {
         this.value = 0;
     }
+    // Doubles value, added by mona to keep grid more seperate from tiles 
+    public void doubleValue() {
+        this.value *= 2;
+    }
 }
