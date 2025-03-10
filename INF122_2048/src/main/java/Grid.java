@@ -8,9 +8,9 @@ public class Grid {
 
     private Tiles[][] grid;
     private Random random;
-    private int score = 0;
+    private int score = 0; // Score for the current player
 
-    public Grid(){
+    public Grid() {
         grid = new Tiles[SIZE][SIZE];
         random = new Random();
         initializeGrid();
@@ -18,25 +18,29 @@ public class Grid {
         generateNewTile();
     }
 
+    public Tiles getTile(int x, int y) {
+        return grid[x][y];
+    }
+
     public int getScore() {
         return score;
     }
 
-    // Initalizes board to be filled with tiles(can be empty or contain value)
-    private void initializeGrid(){
-        for(int x = 0; x < SIZE; x++){
-            for(int y = 0; y < SIZE; y++){
+    // Initializes board to be filled with tiles (can be empty or contain value)
+    private void initializeGrid() {
+        for (int x = 0; x < SIZE; x++) {
+            for (int y = 0; y < SIZE; y++) {
                 grid[x][y] = new Tiles();
             }
         }
     }
     
     // Helper function to obtain list with position of empty tiles, used for adding random new tiles
-    private List<int[]> getEmptyTiles(){
-        List<int[]> emptyTiles = new ArrayList<int[]>();
-        for(int x = 0; x < SIZE; x++){
-            for(int y = 0; y < SIZE; y++){
-                if(grid[x][y].isEmpty()){
+    private List<int[]> getEmptyTiles() {
+        List<int[]> emptyTiles = new ArrayList<>();
+        for (int x = 0; x < SIZE; x++) {
+            for (int y = 0; y < SIZE; y++) {
+                if (grid[x][y].isEmpty()) {
                     emptyTiles.add(new int[]{x, y});
                 }
             }
@@ -45,15 +49,15 @@ public class Grid {
     }
 
     // Gets list of empty tile positions and randomly selects and sets value to random 2-4
-    private void generateNewTile(){
+    private void generateNewTile() {
         List<int[]> emptyTiles = getEmptyTiles();
-        if(emptyTiles.size() > 0){
+        if (!emptyTiles.isEmpty()) {
             int[] position = emptyTiles.get(random.nextInt(emptyTiles.size()));
             grid[position[0]][position[1]].setValue(random.nextInt(2) == 0 ? 2 : 4);
         }
     }
     
-    // Function to print grid for testing purposes Delete later
+    // Function to print grid for testing purposes
     public void printGrid() {
         for (int x = 0; x < SIZE; x++) {
             for (int y = 0; y < SIZE; y++) {
@@ -61,11 +65,10 @@ public class Grid {
             }
             System.out.println();
         }
-        System.out.println();
+        System.out.println("Current Score: " + getScore()); // Display current score
     }
 
-    //MOVEMENT heavily relies on shiftAndMergeRow function.
-
+    // Movement heavily relies on shiftAndMergeRow function
     // Moves left
     public void moveLeft() {
         boolean moved = false;
@@ -81,18 +84,18 @@ public class Grid {
     public void moveRight() {
         boolean moved = false;
         for (int x = 0; x < SIZE; x++) {
-            //Reverses each row so shift and merge can be used
+            // Reverses each row so shift and merge can be used
             Tiles[] reversed = reverseArray(grid[x]);
             if (shiftAndMergeRow(reversed)) {
                 moved = true;
             }
-            //Reverses back to original order
+            // Reverses back to original order
             grid[x] = reverseArray(reversed);
         }
         if (moved) generateNewTile();
     }
-    // Vertical movement is done by getting each column(maybe reversed), shifting and merging the tiles, then column back into the grid.
-    // MOves up by chnging to column then shift and merging
+
+    // Moves up by changing to column then shift and merging
     public void moveUp() {
         boolean moved = false;
         for (int y = 0; y < SIZE; y++) {
@@ -123,10 +126,8 @@ public class Grid {
     private boolean shiftAndMergeRow(Tiles[] line) {
         boolean moved = false;
         Tiles[] newLine = new Tiles[SIZE];
-        // "merged" tracks whether a tile at that index in newLine has already merged
         boolean[] merged = new boolean[SIZE];
-        
-        // Initialize newLine with emopty tiles
+
         for (int i = 0; i < SIZE; i++) {
             newLine[i] = new Tiles();
             merged[i] = false;
@@ -136,14 +137,12 @@ public class Grid {
         for (int i = 0; i < SIZE; i++) {
             if (!line[i].isEmpty()) {
                 int currentValue = line[i].getValue();
-                //check if the previous tile can merge and hasnt yet
                 if (insertPos > 0 && !merged[insertPos - 1] && newLine[insertPos - 1].getValue() == currentValue) {
                     newLine[insertPos - 1].doubleValue();
-                    score += newLine[insertPos -1].getValue() ;
+                    score += newLine[insertPos - 1].getValue();// Award 8 points for each merge to the current player
                     merged[insertPos - 1] = true;
                     moved = true;
                 } else {
-                    //mark movement if tile is not in the same position
                     if (i != insertPos) {
                         moved = true;
                     }
@@ -152,7 +151,6 @@ public class Grid {
                 }
             }
         }
-        // copy and merge line back
         System.arraycopy(newLine, 0, line, 0, SIZE);
         return moved;
     }
@@ -173,7 +171,7 @@ public class Grid {
         }
     }
 
-    // Reverses array for movement (right and don)
+    // Reverses array for movement (right and down)
     private Tiles[] reverseArray(Tiles[] array) {
         Tiles[] reversed = new Tiles[SIZE];
         for (int i = 0; i < SIZE; i++) {
@@ -183,45 +181,45 @@ public class Grid {
     }
 
     // Checks if player has won the game (tile reaches 2048)
-public boolean hasWon() {
-    for (int x = 0; x < SIZE; x++) {
-        for (int y = 0; y < SIZE; y++) {
-            if (grid[x][y].getValue() == 2048) {
-                return true;
+    public boolean hasWon() {
+        for (int x = 0; x < SIZE; x++) {
+            for (int y = 0; y < SIZE; y++) {
+                if (grid[x][y].getValue() == 2048) {
+                    return true;
+                }
             }
         }
+        return false;
     }
-    return false;
-}
 
-// Checks if no more moves are possible (Game Over condition)
-public boolean isGameOver() {
-    if (!getEmptyTiles().isEmpty()) {
-        return false; // If there are empty tiles, game isn't over
-    }
-    
-    // Check if any moves can still be made
-    for (int x = 0; x < SIZE; x++) {
-        for (int y = 0; y < SIZE; y++) {
-            int currentValue = grid[x][y].getValue();
-
-            // Check adjacent tiles
-            if (x > 0 && grid[x - 1][y].getValue() == currentValue) return false; // Left
-            if (x < SIZE - 1 && grid[x + 1][y].getValue() == currentValue) return false; // Right
-            if (y > 0 && grid[x][y - 1].getValue() == currentValue) return false; // Up
-            if (y < SIZE - 1 && grid[x][y + 1].getValue() == currentValue) return false; // Down
+    // Checks if no more moves are possible (Game Over condition)
+    public boolean isGameOver() {
+        if (!getEmptyTiles().isEmpty()) {
+            return false; // If there are empty tiles, the game isn't over
         }
+
+        // Check if any moves can still be made
+        for (int x = 0; x < SIZE; x++) {
+            for (int y = 0; y < SIZE; y++) {
+                int currentValue = grid[x][y].getValue();
+
+                // Check adjacent tiles
+                if (x > 0 && grid[x - 1][y].getValue() == currentValue) return false; // Left
+                if (x < SIZE - 1 && grid[x + 1][y].getValue() == currentValue) return false; // Right
+                if (y > 0 && grid[x][y - 1].getValue() == currentValue) return false; // Up
+                if (y < SIZE - 1 && grid[x][y + 1].getValue() == currentValue) return false; // Down
+            }
+        }
+
+        return true; // No moves left
     }
 
-    return true; // No moves left
-}
-
-    // **Main function to test movement**
-    // chatgpted this function to test movement of the grid
-    public static void main(String[] args) {Scanner scanner = new Scanner(System.in);
+    // Main function to test movement of the grid
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         Grid gameGrid = new Grid();
         boolean gameOver = false;
-        
+
         System.out.println("Welcome to 2048!");
         gameGrid.printGrid();
 
@@ -259,7 +257,7 @@ public boolean isGameOver() {
 
             if (moved) {
                 gameGrid.printGrid();
-                System.out.println("Score: " + gameGrid.getScore());  // **Show updated score**
+                System.out.println("Score: " + gameGrid.getScore());  // Show updated score
 
                 if (gameGrid.hasWon()) {
                     System.out.println("Congratulations! You won the game!");
@@ -275,6 +273,4 @@ public boolean isGameOver() {
 
         scanner.close();
     }
-    }
-
-
+}
