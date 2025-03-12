@@ -2,23 +2,68 @@ import java.util.Scanner;
 
 public class Minesweeper {
     private Grid grid;
+    boolean gameOver = false;
+    Scanner scanner = new Scanner(System.in);
 
     public Minesweeper(int size, int numMines) {
         grid = new Grid(size, numMines);
     }
 
+    public int correctNum(String n)
+    {
+        int num = 5;
+        while (true) { 
+            if(n.equals("0"))
+            {
+                return Integer.parseInt(n);
+            }
+            else if(n.equals("1"))
+            {
+                return Integer.parseInt(n);
+            }
+            else if(n.equals("2"))
+            {
+                return Integer.parseInt(n);
+            }
+            else if(n.equals("3"))
+            {
+                return Integer.parseInt(n);
+            }
+            else if(n.equals("4"))
+            {
+                return Integer.parseInt(n);
+            }
+            else if(n.equals("q"))
+            {
+                gameOver = true;
+                break;
+            }
+            else 
+            {
+                System.out.println("Put in a valid answer");
+                n = scanner.nextLine();
+            }
+        }
+        return num;
+    }
+
     public void startGame() {
-        Scanner scanner = new Scanner(System.in);
-        boolean gameOver = false;
 
         while (!gameOver) {
             grid.printBoard();
 
-            System.out.print("Enter row (0 to " + (grid.getSize() - 1) + "): ");
-            int row = scanner.nextInt();
+            System.out.print("Enter row (0 to " + (grid.getSize() - 1) + ") or q to quit: ");
+            String sRow = scanner.nextLine();
+            int row = correctNum(sRow);
 
-            System.out.print("Enter column (0 to " + (grid.getSize() - 1) + "): ");
-            int col = scanner.nextInt();
+            if(row == 5)
+            {
+                break;
+            }
+
+            System.out.print("Enter column (0 to " + (grid.getSize() - 1) + ") or q to quit: ");
+            String sCol = scanner.nextLine();
+            int col = correctNum(sCol);
             
 
             if (row < 0 || row >= grid.getSize() || col < 0 || col >= grid.getSize()) {
