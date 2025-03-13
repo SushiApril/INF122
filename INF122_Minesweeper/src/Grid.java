@@ -76,8 +76,47 @@ public class Grid {
         Tile tile = getTile(row, col);
         if (!tile.isRevealed()) {
             tile.reveal();
+
+            if(tile.getSurroundingMines() == 0)
+            {
+                for(int x = -1; x <= 1; ++x)
+                {
+                    for(int y = -1; y <= 1; ++y)
+                    {
+                        int nRow = row + x;
+                        int nCol = col + y;
+                        if (nRow >= 0 && nRow < size && nCol >= 0 && nCol < size)
+                        {
+                            revealAdjacentTiles(nRow, nCol);
+                        }
+                    }
+                }
+            }
         }
     }
+
+    public void revealAdjacentTiles(int row, int col) {
+        Tile tile = getTile(row, col);
+        
+        if (tile.isRevealed() || tile.isMine()) {
+            return;
+        }
+        
+        revealTile(row, col);
+        
+        if (tile.getSurroundingMines() == 0) {
+            for (int x = -1; x <= 1; x++) {
+                for (int y = -1; y <= 1; y++) {
+                    int newRow = row + x;
+                    int newCol = col + y;
+                    if (newRow >= 0 && newRow < size && newCol >= 0 && newCol < size) {
+                        revealAdjacentTiles(newRow, newCol); // Recursive call
+                    }
+                }
+            }
+        }
+    }
+    
 
     public boolean isMine(int row, int col) {
         return getTile(row, col).isMine();
