@@ -1,25 +1,54 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MinesweeperGUI {
     private JFrame frame;
     private JButton[][] buttons;
     private Grid grid;
-    private int size = 5;  // Default grid size
-    private int numMines = 5; // Default number of mines
+    private int size;
+    private int numMines;
+    private JPanel boardPanel;
 
     public MinesweeperGUI() {
+        getUserInput(); // Get user input **before** initializing anything
+        SwingUtilities.invokeLater(this::initializeGame);
+    }
+
+    private void getUserInput() {
+        boolean validInput = false;
+        while (!validInput) {
+            try {
+                String sizeInput = JOptionPane.showInputDialog(null, "Enter grid size (e.g., 5 for 5x5):", "Minesweeper Setup", JOptionPane.QUESTION_MESSAGE);
+                String minesInput = JOptionPane.showInputDialog(null, "Enter number of mines:", "Minesweeper Setup", JOptionPane.QUESTION_MESSAGE);
+                
+                if (sizeInput == null || minesInput == null) {
+                    System.exit(0); // Exit if user cancels
+                }
+                
+                size = Integer.parseInt(sizeInput);
+                numMines = Integer.parseInt(minesInput);
+                
+                if (size > 0 && numMines > 0 && numMines < size * size) {
+                    validInput = true;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid input! Please enter positive numbers, and mines must be less than total tiles.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Invalid input! Please enter numerical values.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void initializeGame() {
         frame = new JFrame("Minesweeper");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 400);
+        frame.setSize(600, 600);
         frame.setLayout(new BorderLayout());
         
         grid = new Grid(size, numMines);
         buttons = new JButton[size][size];
 
-        JPanel boardPanel = new JPanel();
+        boardPanel = new JPanel();
         boardPanel.setLayout(new GridLayout(size, size));
         
         for (int i = 0; i < size; i++) {
