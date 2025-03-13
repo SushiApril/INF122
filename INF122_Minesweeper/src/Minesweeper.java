@@ -50,36 +50,6 @@ public class Minesweeper {
                 n = scanner.nextLine();
             }
 
-            // if(n.equals("0"))
-            // {
-            //     return Integer.parseInt(n);
-            // }
-            // else if(n.equals("1"))
-            // {
-            //     return Integer.parseInt(n);
-            // }
-            // else if(n.equals("2"))
-            // {
-            //     return Integer.parseInt(n);
-            // }
-            // else if(n.equals("3"))
-            // {
-            //     return Integer.parseInt(n);
-            // }
-            // else if(n.equals("4"))
-            // {
-            //     return Integer.parseInt(n);
-            // }
-            // else if(n.equals("q"))
-            // {
-            //     gameOver = true;
-            //     break;
-            // }
-            // else 
-            // {
-            //     System.out.println("Put in a valid answer");
-            //     n = scanner.nextLine();
-            // }
         }
         return num;
     }
@@ -88,6 +58,9 @@ public class Minesweeper {
 
         while (!gameOver) {
             grid.printBoard();
+
+            System.out.println("Do you  want to click on a tile(c) or flag a tile(f)?");
+            String input = scanner.nextLine();
 
             System.out.print("Enter row (0 to " + (grid.getSize() - 1) + ") or q to quit: ");
             String sRow = scanner.nextLine();
@@ -107,17 +80,24 @@ public class Minesweeper {
                 System.out.println("Invalid coordinates. Try again.");
                 continue;
             }
-
-            if (grid.isMine(row, col)) {
-                System.out.println("Game Over! You hit a mine.");
-                gameOver = true;
-            } else {
-                grid.revealTile(row, col);
-                if (grid.allNonMinesRevealed()) {
-                    System.out.println("Congratulations, you win!");
+            if(input.equals("c"))
+            {
+                if (grid.isMine(row, col)) {
+                    System.out.println("Game Over! You hit a mine.");
                     gameOver = true;
+                } else {
+                    grid.revealTile(row, col);
+                    if (grid.allNonMinesRevealed()) {
+                        System.out.println("Congratulations, you win!");
+                        gameOver = true;
+                    }
                 }
             }
+            else if(input.equals("f"))
+            {
+                grid.getTile(row, col).setFlag();
+            }
+            
         }
 
         scanner.close();
