@@ -4,6 +4,7 @@ public class Minesweeper {
     private Grid grid;
     boolean gameOver = false;
     Scanner scanner = new Scanner(System.in);
+    boolean player = true;
 
     public Minesweeper(int size, int numMines) {
         grid = new Grid(size, numMines);
@@ -59,6 +60,14 @@ public class Minesweeper {
         while (!gameOver) {
             grid.printBoard();
 
+            if(player)
+            {
+                System.out.println("Player 1's turn");
+            }
+            else
+            {
+                System.out.println("Player 2's turn");
+            }
             System.out.println("Do you  want to click on a tile(c) or flag a tile(f)?");
             String input = scanner.nextLine();
 
@@ -83,13 +92,37 @@ public class Minesweeper {
             if(input.equals("c"))
             {
                 if (grid.isMine(row, col)) {
-                    System.out.println("Game Over! You hit a mine.");
-                    gameOver = true;
+                    if(player)
+                    {
+                        System.out.println("Game Over! Player 1 hit the mine. Player 2 wins");
+                        grid.revealTile(row, col);
+                        gameOver = true;
+                        grid.printBoard();
+                    }
+                    else
+                    {
+                        System.out.println("Game Over! Player 2 hit the mine. Player 1 wins");
+                        grid.revealTile(row, col);
+                        gameOver = true;
+                        grid.printBoard();
+                    }
+                    
                 } else {
                     grid.revealTile(row, col);
                     if (grid.allNonMinesRevealed()) {
-                        System.out.println("Congratulations, you win!");
-                        gameOver = true;
+                        if(player)
+                        {
+                            System.out.println("Congratulations, you win player 1!");
+                            gameOver = true;
+                            grid.printBoard();
+                        }
+                        else
+                        {
+                            System.out.println("Congratulations, you win player 2!");
+                            gameOver = true;
+                            grid.printBoard();
+                        }
+                        
                     }
                 }
             }
@@ -98,6 +131,7 @@ public class Minesweeper {
                 grid.getTile(row, col).setFlag();
             }
             
+            player = !player;
         }
 
         scanner.close();
