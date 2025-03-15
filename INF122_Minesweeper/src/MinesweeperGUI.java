@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 public class MinesweeperGUI {
     private JFrame frame;
@@ -55,7 +56,16 @@ public class MinesweeperGUI {
             for (int j = 0; j < size; j++) {
                 buttons[i][j] = new JButton(" ");
                 final int row = i, col = j;
-                buttons[i][j].addActionListener(e -> handleTileClick(row, col));
+                buttons[i][j].addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                        if (SwingUtilities.isRightMouseButton(e)) { // Right-click to flag
+                            toggleFlag(row, col);
+                        } else { // Left-click to reveal
+                            handleTileClick(row, col);
+                        }
+                    }
+                });
                 boardPanel.add(buttons[i][j]);
             }
         }
@@ -70,23 +80,34 @@ public class MinesweeperGUI {
     }
 
     private void handleTileClick(int row, int col) {
-        if (grid.isMine(row, col)) {
-            buttons[row][col].setText("*");
-            buttons[row][col].setBackground(Color.RED);
-            JOptionPane.showMessageDialog(frame, "Game Over! You hit a mine.");
-            disableButtons();
-        } else {
-            revealTile(row, col);
-            if (grid.allNonMinesRevealed()) {
-                JOptionPane.showMessageDialog(frame, "Congratulations! You win!");
+        Tile tile = grid.getTile(row, col);
+        if (!tile.isFlagged()) { // Prevent revealing flagged tiles
+            if (tile.isMine()) {
+                buttons[row][col].setText("*");
+                buttons[row][col].setBackground(Color.RED);
+                JOptionPane.showMessageDialog(frame, "Game Over! You hit a mine.");
                 disableButtons();
+            } else {
+                revealTile(row, col);
+                if (grid.allNonMinesRevealed()) {
+                    JOptionPane.showMessageDialog(frame, "Congratulations! You win!");
+                    disableButtons();
+                }
             }
+        }
+    }
+
+    private void toggleFlag(int row, int col) {
+        Tile tile = grid.getTile(row, col);
+        if (!tile.isRevealed()) { // Only flag if the tile isn't revealed
+            tile.toggleFlag();
+            buttons[row][col].setText(tile.isFlagged() ? "🚩" : " ");
         }
     }
 
     private void revealTile(int row, int col) {
         Tile tile = grid.getTile(row, col);
-        if (!tile.isRevealed()) {
+        if (!tile.isRevealed() && !tile.isFlagged()) {
             tile.reveal();
             buttons[row][col].setText(tile.getSurroundingMines() > 0 ? String.valueOf(tile.getSurroundingMines()) : "");
             buttons[row][col].setEnabled(false);

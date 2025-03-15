@@ -1,12 +1,31 @@
 public class Tile {
-    private boolean isMine;  // If this tile contains a mine
-    private int surroundingMines; // Number of adjacent mines
-    private boolean revealed; // If this tile has been revealed
+    private boolean isMine;
+    private int surroundingMines;
+    private boolean revealed;
+    private boolean flagged; // New flag variable
 
     public Tile() {
         this.isMine = false;
         this.surroundingMines = 0;
         this.revealed = false;
+        this.flagged = false; // Initialize as not flagged
+    }
+
+    public boolean isFlagged() {
+        return flagged;
+    }
+
+    public void toggleFlag() {
+        this.flagged = !this.flagged;
+    }
+
+    public boolean isRevealed() {
+        return revealed;
+    }
+
+    public void reveal() {
+        this.revealed = true;
+        this.flagged = false; // Remove flag if revealed
     }
 
     public boolean isMine() {
@@ -21,24 +40,7 @@ public class Tile {
         return surroundingMines;
     }
 
-    public void setSurroundingMines(int surroundingMines) {
-        this.surroundingMines = surroundingMines;
-    }
-
-    public boolean isRevealed() {
-        return revealed;
-    }
-
-    public void reveal() {
-        this.revealed = true;
-    }
-
-    @Override
-    public String toString() {
-        if (revealed) {
-            return isMine ? "*" : Integer.toString(surroundingMines);
-        } else {
-            return "-";
-        }
+    public void setSurroundingMines(int count) {
+        this.surroundingMines = count;
     }
 }
