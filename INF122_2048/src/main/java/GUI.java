@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GUI extends JFrame {
-    private Grid grid;  // The game logic class that handles all game mechanics
+    private Grid2048 grid;  // The game logic class that handles all game mechanics
     private JLabel[][] tileLabels;  // Labels to display tiles on the grid
     private JLabel scorePlayer1Label, scorePlayer2Label, currentPlayerLabel;  // Labels for displaying scores and the current player
     private static final int GRID_SIZE = 4;  // Size of the grid, 4x4 for 2048
@@ -13,7 +13,7 @@ public class GUI extends JFrame {
     private int scorePlayer2 = 0;
 
     public GUI() {
-        grid = new Grid();  // Initialize the game logic
+        grid = new Grid2048();  // Initialize the game logic
         setTitle("2048 Multiplayer Game");
         setSize(500, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -97,7 +97,7 @@ public class GUI extends JFrame {
     }
 
     private void resetGame() {
-        grid = new Grid();
+        grid = new Grid2048();
         scorePlayer1 = 0;
         scorePlayer2 = 0;
         scorePlayer1Label.setText("Player 1: 0");

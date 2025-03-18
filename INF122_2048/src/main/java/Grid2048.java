@@ -3,36 +3,43 @@ import java.util.Random;
 import java.util.List;
 import java.util.Scanner;
 
-public class Grid {
-    private static final int SIZE = 4; //4x4 for 2048, can be changed for larger grid
+public class Grid2048 extends GameGrid<Tile2048> {
+    private static final int SIZE = 4; 
 
-    private Tiles[][] grid;
     private Random random;
     private int score = 0; // Score for the current player
 
-    public Grid() {
-        grid = new Tiles[SIZE][SIZE];
+    // Constructor adapted to call super(SIZE) so GameGrid can initialize the grid array
+    public Grid2048() {
+        super(SIZE);
         random = new Random();
         initializeGrid();
         generateNewTile();
         generateNewTile();
     }
 
-    public Tiles getTile(int x, int y) {
+    // Creates the 2D array of Tile2048 (overriding from GameGrid)
+    @Override
+    protected Tile2048[][] createGrid(int size) {
+        return new Tile2048[size][size];
+    }
+
+    // Initializes board to be filled with tiles (can be empty or contain value)
+    @Override
+    protected void initializeGrid() {
+        for (int x = 0; x < SIZE; x++) {
+            for (int y = 0; y < SIZE; y++) {
+                grid[x][y] = new Tile2048();
+            }
+        }
+    }
+
+    public Tile2048 getTile(int x, int y) {
         return grid[x][y];
     }
 
     public int getScore() {
         return score;
-    }
-
-    // Initializes board to be filled with tiles (can be empty or contain value)
-    private void initializeGrid() {
-        for (int x = 0; x < SIZE; x++) {
-            for (int y = 0; y < SIZE; y++) {
-                grid[x][y] = new Tiles();
-            }
-        }
     }
     
     // Helper function to obtain list with position of empty tiles, used for adding random new tiles
@@ -85,7 +92,7 @@ public class Grid {
         boolean moved = false;
         for (int x = 0; x < SIZE; x++) {
             // Reverses each row so shift and merge can be used
-            Tiles[] reversed = reverseArray(grid[x]);
+            Tile2048[] reversed = reverseArray(grid[x]);
             if (shiftAndMergeRow(reversed)) {
                 moved = true;
             }
@@ -99,7 +106,7 @@ public class Grid {
     public void moveUp() {
         boolean moved = false;
         for (int y = 0; y < SIZE; y++) {
-            Tiles[] column = getColumn(y);
+            Tile2048[] column = getColumn(y);
             if (shiftAndMergeRow(column)) {
                 moved = true;
             }
@@ -112,8 +119,8 @@ public class Grid {
     public void moveDown() {
         boolean moved = false;
         for (int y = 0; y < SIZE; y++) {
-            Tiles[] column = getColumn(y);
-            Tiles[] reversed = reverseArray(column);
+            Tile2048[] column = getColumn(y);
+            Tile2048[] reversed = reverseArray(column);
             if (shiftAndMergeRow(reversed)) {
                 moved = true;
             }
@@ -123,13 +130,13 @@ public class Grid {
     }
 
     // Shifts and merges the tiles in a row and returns true if any movement happened
-    private boolean shiftAndMergeRow(Tiles[] line) {
+    private boolean shiftAndMergeRow(Tile2048[] line) {
         boolean moved = false;
-        Tiles[] newLine = new Tiles[SIZE];
+        Tile2048[] newLine = new Tile2048[SIZE];
         boolean[] merged = new boolean[SIZE];
 
         for (int i = 0; i < SIZE; i++) {
-            newLine[i] = new Tiles();
+            newLine[i] = new Tile2048();
             merged[i] = false;
         }
 
@@ -139,14 +146,14 @@ public class Grid {
                 int currentValue = line[i].getValue();
                 if (insertPos > 0 && !merged[insertPos - 1] && newLine[insertPos - 1].getValue() == currentValue) {
                     newLine[insertPos - 1].doubleValue();
-                    score += newLine[insertPos - 1].getValue();// Award 8 points for each merge to the current player
+                    score += newLine[insertPos - 1].getValue(); // Award 8 points for each merge to the current player
                     merged[insertPos - 1] = true;
                     moved = true;
                 } else {
                     if (i != insertPos) {
                         moved = true;
                     }
-                    newLine[insertPos] = new Tiles(currentValue);
+                    newLine[insertPos] = new Tile2048(currentValue);
                     insertPos++;
                 }
             }
@@ -156,8 +163,8 @@ public class Grid {
     }
 
     // Gets column as an array to be worked on by shift and merge
-    private Tiles[] getColumn(int y) {
-        Tiles[] column = new Tiles[SIZE];
+    private Tile2048[] getColumn(int y) {
+        Tile2048[] column = new Tile2048[SIZE];
         for (int x = 0; x < SIZE; x++) {
             column[x] = grid[x][y];
         }
@@ -165,15 +172,15 @@ public class Grid {
     }
 
     // Sets column back onto the grid
-    private void setColumn(int y, Tiles[] column) {
+    private void setColumn(int y, Tile2048[] column) {
         for (int x = 0; x < SIZE; x++) {
             grid[x][y] = column[x];
         }
     }
 
     // Reverses array for movement (right and down)
-    private Tiles[] reverseArray(Tiles[] array) {
-        Tiles[] reversed = new Tiles[SIZE];
+    private Tile2048[] reverseArray(Tile2048[] array) {
+        Tile2048[] reversed = new Tile2048[SIZE];
         for (int i = 0; i < SIZE; i++) {
             reversed[i] = array[SIZE - 1 - i];
         }
@@ -193,6 +200,7 @@ public class Grid {
     }
 
     // Checks if no more moves are possible (Game Over condition)
+    @Override
     public boolean isGameOver() {
         if (!getEmptyTiles().isEmpty()) {
             return false; // If there are empty tiles, the game isn't over
@@ -217,7 +225,7 @@ public class Grid {
     // Main function to test movement of the grid
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Grid gameGrid = new Grid();
+        Grid2048 gameGrid = new Grid2048();
         boolean gameOver = false;
 
         System.out.println("Welcome to 2048!");
