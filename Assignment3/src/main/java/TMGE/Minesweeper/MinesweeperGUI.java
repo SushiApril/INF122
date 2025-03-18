@@ -11,6 +11,10 @@ public class MinesweeperGUI {
     private int size;
     private int numMines;
     private JPanel boardPanel;
+    private JLabel playerTurnLabel;
+    private JLabel playerScoresLabel;
+    private int currentPlayer;
+    private int[] playerScores;
 
     public MinesweeperGUI() {
         getUserInput(); // Get user input **before** initializing anything
@@ -43,9 +47,9 @@ public class MinesweeperGUI {
     }
 
     private void initializeGame() {
-        frame = new JFrame("Minesweeper");
+        frame = new JFrame("Minesweeper - Multiplayer");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 600);
+        frame.setSize(600, 700);
         frame.setLayout(new BorderLayout());
 
         grid = new GridMinesweeper(size, numMines);
@@ -53,6 +57,16 @@ public class MinesweeperGUI {
 
         boardPanel = new JPanel();
         boardPanel.setLayout(new GridLayout(size, size));
+
+        currentPlayer = 0;
+        playerScores = new int[2];
+
+        playerTurnLabel = new JLabel("Player 1's Turn", SwingConstants.CENTER);
+        playerScoresLabel = new JLabel("Scores - Player 1: 0 | Player 2: 0", SwingConstants.CENTER);
+        
+        JPanel topPanel = new JPanel(new GridLayout(2, 1));
+        topPanel.add(playerTurnLabel);
+        topPanel.add(playerScoresLabel);
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -75,9 +89,9 @@ public class MinesweeperGUI {
         JButton restartButton = new JButton("Restart");
         restartButton.addActionListener(e -> restartGame());
 
+        frame.add(topPanel, BorderLayout.NORTH);
         frame.add(boardPanel, BorderLayout.CENTER);
         frame.add(restartButton, BorderLayout.SOUTH);
-
         frame.setVisible(true);
     }
 
@@ -87,16 +101,33 @@ public class MinesweeperGUI {
             if (tile.isMine()) {
                 buttons[row][col].setText("*");
                 buttons[row][col].setBackground(Color.RED);
-                JOptionPane.showMessageDialog(frame, "Game Over! You hit a mine.");
-                disableButtons();
+                JOptionPane.showMessageDialog(frame, "Player " + (currentPlayer + 1) + " hit a mine! Turn skipped.");
+                switchTurn();
             } else {
                 revealTile(row, col);
+                playerScores[currentPlayer]++;
+                updateScoreDisplay();
                 if (grid.allNonMinesRevealed()) {
-                    JOptionPane.showMessageDialog(frame, "Congratulations! You win!");
+                    JOptionPane.showMessageDialog(frame, "Game Over! Player " + (getWinningPlayer() + 1) + " wins!");
                     disableButtons();
+                } else {
+                    switchTurn();
                 }
             }
         }
+    }
+
+    private void switchTurn() {
+        currentPlayer = (currentPlayer + 1) % 2;
+        playerTurnLabel.setText("Player " + (currentPlayer + 1) + "'s Turn");
+    }
+
+    private void updateScoreDisplay() {
+        playerScoresLabel.setText("Scores - Player 1: " + playerScores[0] + " | Player 2: " + playerScores[1]);
+    }
+
+    private int getWinningPlayer() {
+        return (playerScores[0] > playerScores[1]) ? 0 : 1;
     }
 
     private void toggleFlag(int row, int col) {
@@ -133,3 +164,4 @@ public class MinesweeperGUI {
         SwingUtilities.invokeLater(MinesweeperGUI::new);
     }
 }
+
