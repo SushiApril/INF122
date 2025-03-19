@@ -15,15 +15,12 @@ The TMGE provides a **common framework** to make it easy to implement and extend
 ✅ **Turn-based multiplayer (2 players)**  
 --
 ## 🛠️ Installation & Setup
-### **🔹 Prerequisites**
-- **Java 20+** (or compatible JDK)
-- **Maven** installed
-- **Git** installed (optional, for cloning the repository)
+download or clone the github repository
 
 ### **🔹 Clone the Repository**
 https://github.com/SushiApril/INF122.git
 
-Run jar file: Main.jar
+Run jar file: TMGE_Implemenation.jar
 
 🔧 Extensibility & Design
 🔹 TMGE Core
