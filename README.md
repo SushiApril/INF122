@@ -45,3 +45,11 @@ Extend GameTile to define individual tiles used in the game.
   - Developed the GUI for the 2048 game.
   - Created a main class for the GUI, which was not used in the final codebase.
   - Completely handled the documentation, including the creation of UML diagrams, class diagrams, and sequence diagrams.
+- **Lharmona Lamouth**:
+  - Built 2048 with Sushant, mostly focused on grid logic
+  - Made the superclasses from 2048 and minesweeper code. Fully transffered 2048 to the super class implementation
+  - Handled most of 2048 backend logic and design
+- **Sushant Gupta**:
+  - Built 2048 backend with Lharmona
+  - Refactored entire codebase to integrate with superclass
+  - Integrated different GUI's into the main GUI
