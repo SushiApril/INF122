@@ -39,7 +39,7 @@ Create a new package in TMGE.YourGameName
 Extend GameGrid<T extends GameTile> to create a grid-based game board.
 Extend GameTile to define individual tiles used in the game.
 
-🔹 Individual Contributions
+## ✅ Individual Contributions
 
 - **Shreya Sharma**:
   - Developed the GUI for the 2048 game.
