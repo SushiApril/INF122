@@ -38,3 +38,10 @@ To create a new game in TMGE, follow these steps:
 Create a new package in TMGE.YourGameName
 Extend GameGrid<T extends GameTile> to create a grid-based game board.
 Extend GameTile to define individual tiles used in the game.
+
+🔹 Individual Contributions
+
+- **Shreya Sharma**:
+  - Developed the GUI for the 2048 game.
+  - Created a main class for the GUI, which was not used in the final codebase.
+  - Completely handled the documentation, including the creation of UML diagrams, class diagrams, and sequence diagrams.
