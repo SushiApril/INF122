@@ -24,3 +24,16 @@ The TMGE provides a **common framework** to make it easy to implement and extend
 https://github.com/SushiApril/INF122.git
 
 Run jar file: Main.jar
+
+🔧 Extensibility & Design
+🔹 TMGE Core
+At the heart of this project is the TMGE framework, which provides:
+
+Abstract classes (GameGrid, GameTile) to define game mechanics.
+A game launcher that allows players to select and play different games.
+🔹 How to Add a New Game
+To create a new game in TMGE, follow these steps:
+
+Create a new package in TMGE.YourGameName
+Extend GameGrid<T extends GameTile> to create a grid-based game board.
+Extend GameTile to define individual tiles used in the game.
