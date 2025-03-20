@@ -53,3 +53,6 @@ Extend GameTile to define individual tiles used in the game.
   - Built 2048 backend with Lharmona
   - Refactored entire codebase to integrate with superclass
   - Integrated different GUI's into the main GUI
+- **Matthew Levin**:
+  - Developed the backend for the minesweeper game.
+  - Filled out part of the documentation
