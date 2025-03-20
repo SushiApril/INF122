@@ -60,5 +60,7 @@ Extend GameTile to define individual tiles used in the game.
   - Refactored entire codebase to integrate with superclass
   - Integrated different GUI's into the main GUI
 - **Matthew Levin**:
-  - Developed the backend for the minesweeper game.
+  - Developed the backend for the minesweeper game
   - Filled out part of the documentation
+- **Nithin Senthil**:
+  - Developed the GUI for the minesweeper game
