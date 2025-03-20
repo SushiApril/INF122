@@ -18,10 +18,10 @@ The TMGE provides a **common framework** to make it easy to implement and extend
 download or clone the github repository
 
 ## System Requirements/Prerequisites/Dependencies
-Java version 23.0.2
-Ensure that the latest version of java is installed on your device
-Used java.util libraries
-Used javax.swing and java.awt libraries
+- Java version 23.0.2
+- Ensure that the latest version of java is installed on your device
+- Used java.util libraries
+- Used javax.swing and java.awt libraries
 
 ### **🔹 Clone the Repository**
 https://github.com/SushiApril/INF122.git
